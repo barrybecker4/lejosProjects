@@ -7,17 +7,16 @@ import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.NXTMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
-import lejos.hardware.sensor.EV3GyroSensor;
-import lejos.hardware.sensor.EV3IRSensor;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.HiTechnicGyro;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 
 public class Balancer {
 
-	/** diameter of the EV3 wheels */
-    private static final double WHEEL_DIAMETER = 5.2;
+    /** diameter of the EV3 wheels */
+    private static final double MEDIUM_WHEEL_DIAMETER = 5.2;
+    /** diameter of large mindstorm wheels */
+    private static final double LARGE_WHEEL_DIAMETER = 7.1;
     
     public static void main(String[] args) throws Exception {
         LCD.drawString("Segway Balancer", 1, 3);
@@ -31,7 +30,7 @@ public class Balancer {
         //EV3IRSensor irSensor = new EV3IRSensor(SensorPort.S4);
         //SampleProvider distanceSampler = irSensor.getDistanceMode();
         
-        EV3Segoway robot = new EV3Segoway(left, right, gyro, WHEEL_DIAMETER); //EV3SegowayPilot.WHEEL_SIZE_NXT2);
+        EV3Segoway robot = new EV3Segoway(left, right, gyro, MEDIUM_WHEEL_DIAMETER); //EV3SegowayPilot.WHEEL_SIZE_NXT2);
         
         /*
         Delay.msDelay(2000);

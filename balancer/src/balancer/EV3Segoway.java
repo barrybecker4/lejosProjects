@@ -11,7 +11,7 @@ import lejos.robotics.SampleProvider;
  * (tall or short) such as the <a href="http://www.laurensvalk.com/nxt-2_0-only/anyway">Anyway</a> or
  * the <a href="http://www.hitechnic.com/blog/gyro-sensor/htway/">HTWay</a>. Wheel diameter is the most
  * important construction variable, which is specified in the constructor.</p> 
- * Also refer to http://www.hitechnic.com/blog/gyro-sensor/htway/
+ * Also refer to http://www.hitechnic.com/blog/gyro-sensor/htway/ 
  * 
  * <p>To start the robot balancing:
  * <li>1. Run the program. You will be prompted to lay it down.
