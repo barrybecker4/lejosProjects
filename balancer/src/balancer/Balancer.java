@@ -16,7 +16,7 @@ public class Balancer {
     /** diameter of the EV3 wheels */
     private static final double MEDIUM_WHEEL_DIAMETER = 5.2;
     /** diameter of large mindstorm wheels */
-    private static final double LARGE_WHEEL_DIAMETER = 7.1;
+    private static final double LARGE_WHEEL_DIAMETER = 7.2;
     
     public static void main(String[] args) throws Exception {
         LCD.drawString("Segway Balancer", 1, 3);

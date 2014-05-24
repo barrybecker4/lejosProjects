@@ -52,7 +52,7 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
      * Loop wait time.  WAIT_TIME is the time in ms passed to the Wait command.
      * NOTE: Balance control loop only takes 1.128 MS in leJOS NXJ. 
      */
-    private static final int WAIT_TIME = 7; // originally 8
+    private static final int WAIT_TIME = 6; // originally 8
     
     // These are the main four balance constants, only the gyro
     // constants are relative to the wheel size.  KPOS and KSPEED
@@ -80,7 +80,7 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
      * to adjust for this drift. Every time through the loop, the current gyro sensor value is
      * averaged into the gyro offset weighted according to this constant.
      */
-    private static final double EMAOFFSET = 0.0005;
+    private static final double EMAOFFSET = 0.0004;  // originally 0.0005
 
     /** 
      * If robot power is saturated (over +/- 100) for over this time limit then 
@@ -169,10 +169,7 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
         this.gyro = gyro;
         this.ratioWheel = wheelDiameter/5.6; // Original algorithm was tuned for 5.6 cm NXT 1.0 wheels.
         
-        // Took out 50 ms delay here.
-        
-        // Get the initial gyro offset
-        getGyroOffset();
+        calibrateGyro();
 
         // Play warning beep sequence before balance starts
         startBeeps();
@@ -184,12 +181,12 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
 
     /**
      * This function returns a suitable initial gyro offset.  It takes
-     * 100 gyro samples over a time of 1/2 second and averages them to
+     * N gyro samples over a time of 1/2 second and averages them to
      * get the offset.  It also check the max and min during that time
      * and if the difference is larger than one it rejects the data and
      * gets another set of samples.
      */
-    private void getGyroOffset() {
+    private void calibrateGyro() {
         
         System.out.println("EV3 Segoway");
         System.out.println();
@@ -201,10 +198,14 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
         
         // read a few values and take the average
         float total = 0;
-        float num = 20;
-        for (int i=0; i<num; i++) {
-            total += getAngularVelocity();
+        float num = 100;
+        try {
+	        for (int i=0; i<num; i++) {
+	            total += getAngularVelocity();
+	            Thread.sleep(5);
+	        }
         }
+        catch (InterruptedException e) {}
         gyroBaseline = total / num;
         LCD.drawString("GyroBaseline: " + gyroBaseline, 2, 3);
     }
@@ -219,7 +220,7 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
         // Play warning beep sequence to indicate balance about to start
         for (int c=5; c>0;c--) {
             System.out.print(c + " ");
-            Sound.playTone(440,100);
+            Sound.playTone(440, 100);
             try { Thread.sleep(1000);
             } catch (InterruptedException e) {}
         }
@@ -233,17 +234,15 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
      * Maintains an automatically adjusted gyro offset as well as the integrated gyro angle.
      */
     private void updateGyroData() {
-        // TODO: The GyroSensor class actually rebaselines for drift ever 5 seconds. This not needed? Or is this method better?
-        // Some of this fine tuning may actually interfere with fine-tuning happening in the hardcoded dIMU and GyroScope code.
         
         float gyroRaw = getAngularVelocity();
         gOffset = EMAOFFSET * gyroRaw + (1-EMAOFFSET) * gOffset;
         gyroSpeed = gyroRaw - gOffset; // Angular velocity (degrees/sec)
 
-        gAngleGlobal += gyroSpeed*tInterval;
+        gAngleGlobal += gyroSpeed * tInterval;
         //gAngleGlobal += gyroRaw*tInterval;
         gyroAngle = gAngleGlobal; // Absolute angle (degrees)
-        LCD.drawString("angle="+gyroAngle, 5, 8);
+        //LCD.drawString("angle=" + gyroAngle, 5, 8);
     }
     
     /**
@@ -255,7 +254,7 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
         gyro.fetchSample(rate, 0);
         float rotSpeed = rate[0] - gyroBaseline;
         //System.out.println("gyroRaw="+gyroRaw);
-        LCD.drawString("Gyro: " + rotSpeed, 2, 1);
+        //LCD.drawString("Gyro: " + rotSpeed, 2, 1);
         return rotSpeed; 
     }
 
@@ -281,7 +280,7 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
         motorPos += mrcDelta;
 
         // motorSpeed is based on the average of the last four delta's.
-        motorSpeed = (mrcDelta+mrcDeltaP1+mrcDeltaP2+mrcDeltaP3)/(4*tInterval);
+        motorSpeed = (mrcDelta+mrcDeltaP1+mrcDeltaP2+mrcDeltaP3) / (4*tInterval);
 
         // Shift the latest mrcDelta into the previous three saved delta values
         mrcDeltaP3 = mrcDeltaP2;
@@ -341,7 +340,7 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
         } else {
             // Take average of number of times through the loop and
             // use for interval time.
-            tInterval = (System.currentTimeMillis() - tCalcStart)/(cLoop*1000.0);
+            tInterval = (System.currentTimeMillis() - tCalcStart) / (cLoop*1000.0);
         }
     }
 
@@ -446,7 +445,7 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
         Sound.beepSequenceUp();
         System.out.println("Oops... I fell");
         System.out.println("tInt ms:");
-        System.out.println((int)tInterval*1000);
+        System.out.println((int)(tInterval*1000));
     } // END OF BALANCING THREAD CODE
 
     /**
