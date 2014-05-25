@@ -40,7 +40,6 @@ import lejos.robotics.navigation.MoveListener;
  * 
  * @see lejos.robotics.navigation.Segoway
  * @author Brian Bgnall
- *
  */
 public class EV3SegowayPilot extends EV3Segoway implements ArcRotateMoveController {
     

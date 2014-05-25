@@ -8,18 +8,24 @@ import lejos.hardware.motor.NXTMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.HiTechnicGyro;
-import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 
+/**
+ * A Balancing Robot.
+ * Makes use of the EV3Segoway classes by Brian Bagnell to do balancing and movement.
+ * 
+ * @author Barry Becker
+ */
 public class Balancer {
 
     /** diameter of the EV3 wheels */
     private static final double MEDIUM_WHEEL_DIAMETER = 5.2;
+    
     /** diameter of large mindstorm wheels */
     private static final double LARGE_WHEEL_DIAMETER = 7.2;
     
     public static void main(String[] args) throws Exception {
-        LCD.drawString("Segway Balancer", 1, 3);
+        LCD.drawString("Balancer Robot", 1, 3);
         Delay.msDelay(1000);
         LCD.clear();
         
