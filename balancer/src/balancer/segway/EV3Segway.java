@@ -1,7 +1,5 @@
 package balancer.segway;
-
 import lejos.hardware.Sound; 
-import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.HiTechnicGyro;
 import lejos.robotics.EncoderMotor;
 
@@ -47,16 +45,15 @@ public class EV3Segway implements FallListener {
      * @param gyro A HiTechnic gyro sensor
      * @param wheelDiameter diameter of wheel, preferably use cm (printed on side of LEGO tires in mm)
      */
-    public EV3Segway(EncoderMotor left, EncoderMotor right, HiTechnicGyro gyro, double wheelDiameter) {
+    public EV3Segway(EncoderMotor left, EncoderMotor right, GyroSensor gyro, double wheelDiameter) {
     
     	this.left_motor = left;
         this.right_motor = right;
-        float gyroBaseline = getGyroBaseline(gyro);
 
         // Play warning beep sequence before balance starts
         startBeeps();
         
-        balancingThread = new BalancingThread(left, right, gyro, gyroBaseline, wheelDiameter, this);
+        balancingThread = new BalancingThread(left, right, gyro, wheelDiameter, this);
         balancingThread.start();
     }
     
@@ -65,55 +62,18 @@ public class EV3Segway implements FallListener {
     	balancingThread.wheelDriver(left_wheel, right_wheel);
     }
     
+    /**
+     * @param elapsedTime Elapsed time in seconds
+     */
     public void hasFallen(double elapsedTime) {
     	Sound.beepSequenceUp();
         System.out.println("Oops... I fell");
         System.out.println("Elapsed time: ");
-        System.out.println((int)(elapsedTime*1000) + " seconds");
+        System.out.println((int)elapsedTime + " seconds");
     }
     
     public void stop() {
         balancingThread.terminate();
-    }
-    
-    /**
-     * This function returns a suitable initial gyro offset.  It takes
-     * N gyro samples over a time of 1/2 second and averages them to
-     * get the offset.  It also check the max and min during that time
-     * and if the difference is larger than one it rejects the data and
-     * gets another set of samples.
-     */
-    private float getGyroBaseline(HiTechnicGyro gyro) {
-    
-        System.out.println("Lay robot down");
-        System.out.println("to calibrate");
-        System.out.println("the gyro");
-        System.out.println();
-        
-        // read a few values and take the average
-        float total = 0;
-        float num = 100;
-        try {
-        	Thread.sleep(500);
-	        for (int i=0; i<num; i++) {
-	            total += getAngularVelocity(gyro);
-	            Thread.sleep(10);
-	        }
-        }
-        catch (InterruptedException e) {}
-        float gyroBaseline = total / num;
-        System.out.println("Gyro Baseline: " + gyroBaseline);
-        return gyroBaseline;
-    }
-    
-    /**
-     * @return the calibrated angular velocity from the gyroscope sensor.
-     */
-    private float getAngularVelocity(HiTechnicGyro gyro) {
-        float[] rate = new float[1];
-        gyro.fetchSample(rate, 0);
-        float rotSpeed = rate[0];
-        return rotSpeed; 
     }
 
     /**

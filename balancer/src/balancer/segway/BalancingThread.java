@@ -1,6 +1,5 @@
 package balancer.segway;
 
-import lejos.hardware.sensor.HiTechnicGyro;
 import lejos.robotics.EncoderMotor;
 
 /**
@@ -17,11 +16,7 @@ import lejos.robotics.EncoderMotor;
  */
 public class BalancingThread extends Thread {
 
-    // Gyro sensor
-    private HiTechnicGyro gyro;
- 
-    // baseline value used for calibration. 0 until it is determined.
-    private float gyroBaseline = 0;
+    private GyroSensor gyro;
     
     private EncoderMotor left_motor;   // used to be EncoderMotor
     private EncoderMotor right_motor;
@@ -57,14 +52,6 @@ public class BalancingThread extends Thread {
      * Power differential used for steering based on difference of target steering and actual motor difference.
      */
     private static final double KSTEER = 0.25;
-
-    /**
-     * Gyro offset control
-     * The gyro sensor will drift with time.  This constant is used in a simple long term averaging
-     * to adjust for this drift. Every time through the loop, the current gyro sensor value is
-     * averaged into the gyro offset weighted according to this constant.
-     */
-    private static final double EMAOFFSET = 0.0004;  // originally 0.0005
 
     /** 
      * If robot power is saturated (over +/- 100) for over this time limit then 
@@ -105,15 +92,14 @@ public class BalancingThread extends Thread {
      */
     private double motorDiffTarget = 0.0;
 
-    /**
-     * Time that robot first starts to balance.  Used to calculate tInterval.
-     */
+    /** Time that robot first starts to balance.  Used to calculate tInterval. */
     private long tCalcStart;
 
-    /**
-     * tInterval is the time, in seconds, for each iteration of the balance loop.
-     */
+    /** tInterval is the time, in seconds, for each iteration of the balance loop. */
     private double tInterval;
+    
+    /** total time that the robot has been balancing. */
+    private double totalTime = 0;
 
     /**
      * ratioWheel stores the relative wheel size compared to a standard NXT 1.0 wheel.
@@ -121,9 +107,6 @@ public class BalancingThread extends Thread {
      */
     private double ratioWheel;
 
-    // Gyro globals
-    private double gOffset;
-    private double gAngleGlobal = 0;
 
     // Motor globals
     private double motorPos = 0;
@@ -132,8 +115,7 @@ public class BalancingThread extends Thread {
     private long mrcDeltaP3 = 0;
     private long mrcDeltaP2 = 0;
     private long mrcDeltaP1 = 0;
-
-    private double gyroSpeed, gyroAngle; // originally local variables
+    
     private double motorSpeed; // originally local variable
     
     /** 
@@ -161,12 +143,11 @@ public class BalancingThread extends Thread {
      * @param fallListener something to notify when the robot falls.
      */
     public BalancingThread(EncoderMotor left, EncoderMotor right, 
-    		HiTechnicGyro gyro, float gyroBase, double wheelDiameter, FallListener fallListener) {
+    		GyroSensor gyro, double wheelDiameter, FallListener fallListener) {
         this.left_motor = left;
         this.right_motor = right;
         // Optional code to accept BasicMotor: this.right_motor = (NXTMotor)right;
         this.gyro = gyro;
-        this.gyroBaseline = gyroBase;
         // Original algorithm was tuned for 5.6 cm NXT 1.0 wheels.
         this.ratioWheel = wheelDiameter / 5.6; 
         
@@ -250,21 +231,22 @@ public class BalancingThread extends Thread {
         while (!terminated) {
             calcInterval(cLoop++);
 
-            updateGyroData();
+            gyro.updateGyroData(tInterval);
             updateMotorData();
 
             // Apply the drive control value to the motor position to get robot to move.
             motorPos -= motorControlDrive * tInterval;
 
             // This is the main balancing equation
-            power = (int)((KGYROSPEED * gyroSpeed +               // Deg/Sec from Gyro sensor
-                    KGYROANGLE * gyroAngle) / ratioWheel + // Deg from integral of gyro
-                    KPOS       * motorPos +                 // From MotorRotaionCount of both motors
-                    KDRIVE     * motorControlDrive +        // To improve start/stop performance
+            power = (int)((KGYROSPEED * gyro.getAngularVelocity() +          // Deg/Sec from Gyro sensor
+                    KGYROANGLE * gyro.getAngle()) / ratioWheel +   // Deg from integral of gyro
+                    KPOS       * motorPos +                  // From MotorRotationCount of both motors
+                    KDRIVE     * motorControlDrive +         // To improve start/stop performance
                     KSPEED     * motorSpeed);                // Motor speed in Deg/Sec
 
-            if (Math.abs(power) < 100)
+            if (Math.abs(power) < 100) {
                 tMotorPosOK = System.currentTimeMillis();
+            }
 
             steerControl(power); // Movement control. Not used for balancing.
 
@@ -289,33 +271,8 @@ public class BalancingThread extends Thread {
         left_motor.flt();
         right_motor.flt();
 
-        fallListener.hasFallen(tInterval);
+        fallListener.hasFallen(totalTime);
     } 
-
-    /**
-     * Get the data from the gyro. 
-     * Fills the pass by reference gyroSpeed and gyroAngle based on updated information from the Gyro Sensor.
-     * Maintains an automatically adjusted gyro offset as well as the integrated gyro angle.
-     */
-    private void updateGyroData() {
-        
-        float gyroRaw = getAngularVelocity();
-        gOffset = EMAOFFSET * gyroRaw + (1-EMAOFFSET) * gOffset;
-        gyroSpeed = gyroRaw - gOffset; // Angular velocity (degrees/sec)
-
-        gAngleGlobal += gyroSpeed * tInterval;
-        gyroAngle = gAngleGlobal; // Absolute angle (degrees)
-    }
-    
-    /**
-     * @return the calibrated angular velocity from the gyro sensor.
-     */
-    private float getAngularVelocity() {
-        float[] rate = new float[1];
-        gyro.fetchSample(rate, 0);
-        float rotSpeed = rate[0] - gyroBaseline;
-        return rotSpeed; 
-    }
 
     /**
      * Keeps track of wheel position for both motors.
@@ -395,5 +352,6 @@ public class BalancingThread extends Thread {
             // use for interval time.
             tInterval = (System.currentTimeMillis() - tCalcStart) / (cLoop * 1000.0);
         }
+        totalTime += tInterval;
     }
 }

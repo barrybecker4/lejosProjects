@@ -65,7 +65,7 @@ public class EV3SegwayPilot extends EV3Segway implements ArcRotateMoveController
      * @param wheelDiameter The diameter of the wheel. For convenience, use the WHEEL_SIZE_XXX constants.
      * @param trackWidth Distance between the center of the right tire and left tire. Use the same units as wheelDiameter.
      */
-    public EV3SegwayPilot(EncoderMotor left, EncoderMotor right, HiTechnicGyro gyro, double wheelDiameter, double trackWidth) {
+    public EV3SegwayPilot(EncoderMotor left, EncoderMotor right, GyroSensor gyro, double wheelDiameter, double trackWidth) {
         super(left, right, gyro, wheelDiameter);
 
         // Initialize move target, which keeps the robot stationary when it starts. Ideally these 

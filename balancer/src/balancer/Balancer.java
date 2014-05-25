@@ -2,6 +2,7 @@
 package balancer;
 
 import balancer.segway.EV3Segway;
+import balancer.segway.GyroSensor;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
@@ -22,7 +23,7 @@ public class Balancer {
     /** diameter of the EV3 wheels */
     private static final double MEDIUM_WHEEL_DIAMETER = 5.2;
     
-    /** diameter of large mindstorm wheels */
+    /** diameter of large Mindstorm wheels */
     private static final double LARGE_WHEEL_DIAMETER = 7.2;
     
     public static void main(String[] args) throws Exception {
@@ -30,10 +31,14 @@ public class Balancer {
         Delay.msDelay(1000);
         LCD.clear();
         
+        System.out.println("Lay robot down");
+        System.out.println("to calibrate");
+        System.out.println("the gyro");
+        
         NXTMotor left = new NXTMotor(MotorPort.B);
         NXTMotor right = new NXTMotor(MotorPort.C);
         //EncoderMotor right = new EV3LargeRegulatedMotor(MotorPort.C);
-        HiTechnicGyro gyro = new HiTechnicGyro(SensorPort.S1);
+        GyroSensor gyro = new GyroSensor(new HiTechnicGyro(SensorPort.S1));
         //EV3IRSensor irSensor = new EV3IRSensor(SensorPort.S4);
         //SampleProvider distanceSampler = irSensor.getDistanceMode();
         
