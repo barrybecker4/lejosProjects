@@ -1,4 +1,4 @@
-package balancer;
+package balancer.segway;
 
 /**
  * Implemented by a class that needs to b notified when an entity falls.

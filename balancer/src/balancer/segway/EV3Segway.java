@@ -1,4 +1,4 @@
-package balancer;
+package balancer.segway;
 
 import lejos.hardware.Sound; 
 import lejos.hardware.lcd.LCD;
@@ -21,13 +21,13 @@ import lejos.robotics.EncoderMotor;
  * calibration, the robot backs up against the wall until it falls forward. When it detects the
  * forward fall, it start the balance loop.</p>
  * 
- * <p>NOTE: In order to make the robot move and navigate, use the SegowayPilot class.</p> 
+ * <p>NOTE: In order to make the robot move and navigate, use the SegwayPilot class.</p> 
  * <p><i>This code is based on the <a href="http://www.hitechnic.com/blog/gyro-sensor/htway/">HTWay</a> by HiTechnic.</i></p>
  * 
  * @author Brian Bagnall
  * @author Barry Becker
  */
-public class EV3Segoway implements FallListener {
+public class EV3Segway implements FallListener {
   
 	protected EncoderMotor left_motor;   // used to be EncoderMotor
     protected EncoderMotor right_motor;
@@ -35,7 +35,7 @@ public class EV3Segoway implements FallListener {
     private final BalancingThread balancingThread;
 
     /**
-     * Creates an instance of the Segoway, prompts the user to lay Segoway flat for gyro calibration,
+     * Creates an instance of the Segway, prompts the user to lay Segway flat for gyro calibration,
      * then begins self-balancing thread. Wheel diameter is used in balancing equations.
      *  
      *  <li>NXT 1.0 wheels = 5.6 cm
@@ -47,7 +47,7 @@ public class EV3Segoway implements FallListener {
      * @param gyro A HiTechnic gyro sensor
      * @param wheelDiameter diameter of wheel, preferably use cm (printed on side of LEGO tires in mm)
      */
-    public EV3Segoway(EncoderMotor left, EncoderMotor right, HiTechnicGyro gyro, double wheelDiameter) {
+    public EV3Segway(EncoderMotor left, EncoderMotor right, HiTechnicGyro gyro, double wheelDiameter) {
     
     	this.left_motor = left;
         this.right_motor = right;
@@ -117,7 +117,7 @@ public class EV3Segoway implements FallListener {
     }
 
     /**
-     * Warn user the Segoway is about to start balancing. 
+     * Warn user the Segway is about to start balancing. 
      */
     private void startBeeps() {
         

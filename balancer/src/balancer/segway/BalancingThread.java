@@ -1,4 +1,4 @@
-package balancer;
+package balancer.segway;
 
 import lejos.hardware.sensor.HiTechnicGyro;
 import lejos.robotics.EncoderMotor;
@@ -7,9 +7,10 @@ import lejos.robotics.EncoderMotor;
  * <p>This class balances a two-wheeled robot. 
  * Refer to http://www.hitechnic.com/blog/gyro-sensor/htway/ for details.
  * 
- * <p>NOTE: In order to make the robot move and navigate, use the SegowayPilot class.</p> 
- * 
- * <p><i>This code is based on the <a href="http://www.hitechnic.com/blog/gyro-sensor/htway/">HTWay</a> by HiTechnic.</i></p>
+ * <p>NOTE: In order to make the robot move and navigate, use the SegwayPilot class.</p> 
+ * <p>
+ * <i>This code is based on the <a href="http://www.hitechnic.com/blog/gyro-sensor/htway/">HTWay</a> by HiTechnic.</i>
+ * </p>
  * 
  * @author Brian Bagnall
  * @author Barry Becker
@@ -145,7 +146,7 @@ public class BalancingThread extends Thread {
     private boolean terminated = false;
 
     /**
-     * Creates an instance of the Segoway, prompts the user to lay Segoway flat for gyro calibration,
+     * Creates an instance of the Segway, prompts the user to lay Segway flat for gyro calibration,
      * then begins self-balancing thread. Wheel diameter is used in balancing equations.
      *  
      *  <li>NXT 1.0 wheels = 5.6 cm

@@ -1,6 +1,7 @@
 
 package balancer;
 
+import balancer.segway.EV3Segway;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
@@ -12,7 +13,7 @@ import lejos.utility.Delay;
 
 /**
  * A Balancing Robot.
- * Makes use of the EV3Segoway classes by Brian Bagnell to do balancing and movement.
+ * Makes use of the EV3Segway classes by Brian Bagnell to do balancing and movement.
  * 
  * @author Barry Becker
  */
@@ -36,7 +37,7 @@ public class Balancer {
         //EV3IRSensor irSensor = new EV3IRSensor(SensorPort.S4);
         //SampleProvider distanceSampler = irSensor.getDistanceMode();
         
-        EV3Segoway robot = new EV3Segoway(left, right, gyro, MEDIUM_WHEEL_DIAMETER); //EV3SegowayPilot.WHEEL_SIZE_NXT2);
+        EV3Segway robot = new EV3Segway(left, right, gyro, MEDIUM_WHEEL_DIAMETER);
         
         /*
         Delay.msDelay(2000);

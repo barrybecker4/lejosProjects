@@ -1,4 +1,4 @@
-package balancer;
+package balancer.segway;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import lejos.robotics.navigation.Move;
 import lejos.robotics.navigation.MoveListener;
 
 /* DEVELOPER NOTES:
- * TODO: Currently no option to build Segoway with opposite motor directions. I assume you can just flip the gyro to
+ * TODO: Currently no option to build Segway with opposite motor directions. I assume you can just flip the gyro to
  * the opposite side of the robot (right to left) and it will balance. Technically AnyWay and HTWay motors 
  * must be backwards because forward motion makes the tachometers go negative. Should allow users to switch direction
  * of motors.
@@ -29,7 +29,7 @@ import lejos.robotics.navigation.MoveListener;
  */
 
 /**
- * <p>Allow standard moves with a Segoway robot. Currently the robot has a 5 second delay between moves to allow
+ * <p>Allow standard moves with a Segway robot. Currently the robot has a 5 second delay between moves to allow
  * it some time to rebalance and straighten out uneven tacho rotations. This can be changed with setMoveDelay().</p>
  *  
  * <p>This code will work with any Segway-style robot, but tall robots will have problems balancing when the robot
@@ -38,10 +38,10 @@ import lejos.robotics.navigation.MoveListener;
  *  
  * <p>The default speed is 50, which can be changed with setTravelSpeed().</p>  
  * 
- * @see lejos.robotics.navigation.Segoway
+ * @see lejos.robotics.navigation.Segway
  * @author Brian Bgnall
  */
-public class EV3SegowayPilot extends EV3Segoway implements ArcRotateMoveController {
+public class EV3SegwayPilot extends EV3Segway implements ArcRotateMoveController {
     
     private int move_delay = 5000; // amount to delay between moves
     
@@ -57,7 +57,7 @@ public class EV3SegowayPilot extends EV3Segoway implements ArcRotateMoveControll
     private ArrayList<MoveListener> listeners= new ArrayList<MoveListener>();
 
     /**
-     * Creates an instance of SegowayPilot.
+     * Creates an instance of SegwayPilot.
      * 
      * @param left The left motor. 
      * @param right The right motor. 
@@ -65,7 +65,7 @@ public class EV3SegowayPilot extends EV3Segoway implements ArcRotateMoveControll
      * @param wheelDiameter The diameter of the wheel. For convenience, use the WHEEL_SIZE_XXX constants.
      * @param trackWidth Distance between the center of the right tire and left tire. Use the same units as wheelDiameter.
      */
-    public EV3SegowayPilot(EncoderMotor left, EncoderMotor right, HiTechnicGyro gyro, double wheelDiameter, double trackWidth) {
+    public EV3SegwayPilot(EncoderMotor left, EncoderMotor right, HiTechnicGyro gyro, double wheelDiameter, double trackWidth) {
         super(left, right, gyro, wheelDiameter);
 
         // Initialize move target, which keeps the robot stationary when it starts. Ideally these 
@@ -212,7 +212,7 @@ public class EV3SegowayPilot extends EV3Segoway implements ArcRotateMoveControll
     // value unless it performs extraordinarily stable between movement.
     
     /**
-     * Set the delay between movements which allows the Segoway to recover balance. Default value is 
+     * Set the delay between movements which allows the Segway to recover balance. Default value is 
      * five seconds (5000 millis).
      */
     public void setMoveDelay(int millis) {
