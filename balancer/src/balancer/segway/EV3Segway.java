@@ -88,8 +88,7 @@ public class EV3Segway implements FallListener {
         for (int c=5; c>0;c--) {
             System.out.print(c + " ");
             Sound.playTone(440, 100);
-            try { Thread.sleep(1000);
-            } catch (InterruptedException e) {}
+            ThreadUtil.sleep(1000);
         }
         System.out.println("GO!");
         System.out.println();

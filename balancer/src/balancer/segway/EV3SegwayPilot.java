@@ -1,14 +1,12 @@
 package balancer.segway;
 
 import java.util.ArrayList;
-
-import lejos.hardware.sensor.EV3GyroSensor;
-import lejos.hardware.sensor.HiTechnicGyro;
 import lejos.robotics.EncoderMotor;
 //import lejos.robotics.Gyroscope;
 import lejos.robotics.navigation.ArcRotateMoveController;
 import lejos.robotics.navigation.Move;
 import lejos.robotics.navigation.MoveListener;
+import static balancer.segway.ThreadUtil.sleep;
 
 /* DEVELOPER NOTES:
  * TODO: Currently no option to build Segway with opposite motor directions. I assume you can just flip the gyro to
@@ -80,7 +78,7 @@ public class EV3SegwayPilot extends EV3Segway implements ArcRotateMoveController
         new MoveControlRegulator().start();
         
         // Sit still for a few seconds at start to establish good balance:
-        try {Thread.sleep(move_delay);} catch (InterruptedException e) {}
+        sleep(move_delay);
     }
 
     /**
@@ -177,8 +175,7 @@ public class EV3SegwayPilot extends EV3Segway implements ArcRotateMoveController
         if (!immediateReturn) {
             while(move_mode != STOP);
         }
-        try {Thread.sleep(move_delay);} catch (InterruptedException e) {}
-
+        sleep(move_delay);
     }
 
     private int angle_parity = 1;
@@ -353,7 +350,7 @@ public class EV3SegwayPilot extends EV3Segway implements ArcRotateMoveController
         // The MoveControlRegulator will switch to stop mode when the targets are reached. Wait here if immediateReturn = false.
         if(!immediateReturn) while(move_mode != STOP);
         
-        try {Thread.sleep(move_delay);} catch (InterruptedException e) {}
+        sleep(move_delay);
     }
 
     public void rotate(double degrees, boolean immediateReturn) {
@@ -387,7 +384,7 @@ public class EV3SegwayPilot extends EV3Segway implements ArcRotateMoveController
         // Wait here until move completes if immediateReturn = false:
         if(!immediateReturn) while(move_mode != STOP);
         
-        try {Thread.sleep(move_delay);} catch (InterruptedException e) {}
+        sleep(move_delay);
     }
 
     public double getMaxTravelSpeed() {
@@ -620,7 +617,7 @@ public class EV3SegwayPilot extends EV3Segway implements ArcRotateMoveController
                     break;
                 }
 
-                try {Thread.sleep(MONITOR_INTERVAL);} catch (InterruptedException e) {}
+                ThreadUtil.sleep(MONITOR_INTERVAL);
             }
         }
     }    

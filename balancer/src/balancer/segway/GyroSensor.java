@@ -94,13 +94,12 @@ public class GyroSensor {
         
         // read a few values and take the average
         float total = 0;
-        try {
-            for (int i=0; i<NUM_CALIBRATON_SAMPLES; i++) {
-                total += getRawAngularVelocity();
-                Thread.sleep(10);
-            }
+       
+        for (int i=0; i<NUM_CALIBRATON_SAMPLES; i++) {
+            total += getRawAngularVelocity();
+            ThreadUtil.sleep(10);
         }
-        catch (InterruptedException e) {}
+       
         float gyroBaseline = total / NUM_CALIBRATON_SAMPLES;
         return gyroBaseline;
     }
