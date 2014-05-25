@@ -26,7 +26,6 @@ import lejos.robotics.navigation.MoveListener;
  * to the lagging motor. This will prevent one motor from getting ahead of the other. Altar values in controlDriver().
  * 2. Simple: Stop one motor when it gets to destination. Wait for other to get there. (Seems unstable.) This solution 
  * won't matter if 1. is implemented properly.
- * 
  */
 
 /**
@@ -40,7 +39,7 @@ import lejos.robotics.navigation.MoveListener;
  * <p>The default speed is 50, which can be changed with setTravelSpeed().</p>  
  * 
  * @see lejos.robotics.navigation.Segoway
- * @author BB
+ * @author Brian Bgnall
  *
  */
 public class EV3SegowayPilot extends EV3Segoway implements ArcRotateMoveController {
@@ -176,7 +175,9 @@ public class EV3SegowayPilot extends EV3Segoway implements ArcRotateMoveControll
         steerPrep((float)turnRate, (float)angle); // This method runs wheelDriver() which starts it moving
 
         // TODO: Assumes user won't go straight from travel to say rotate and assumes stop lasts at least MONITOR_INTERVAL.
-        if(!immediateReturn) while(move_mode != STOP);
+        if (!immediateReturn) {
+            while(move_mode != STOP);
+        }
         try {Thread.sleep(move_delay);} catch (InterruptedException e) {}
 
     }
@@ -184,8 +185,9 @@ public class EV3SegowayPilot extends EV3Segoway implements ArcRotateMoveControll
     private int angle_parity = 1;
 
     public void arc(double radius, double angle, boolean immediateReturn) {
-        for(MoveListener ml:listeners) 
+        for(MoveListener ml:listeners) {
             ml.moveStarted(new Move(true, (float)angle, (float)radius), this); // TODO: Hasn't really been tested
+        }
 
         if (radius == Double.POSITIVE_INFINITY || radius == Double.NEGATIVE_INFINITY) {
             forward();

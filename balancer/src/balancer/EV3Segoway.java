@@ -27,15 +27,14 @@ import lejos.robotics.SampleProvider;
  * 
  * <p><i>This code is based on the <a href="http://www.hitechnic.com/blog/gyro-sensor/htway/">HTWay</a> by HiTechnic.</i></p>
  * 
- * @author BB
+ * @author Brian Bagnall
  *
  */
 public class EV3Segoway extends Thread { // TODO: Thread should be a private inner class.
 
     // Motors and gyro:
-    // private GyroSensor gyro; 
     private HiTechnicGyro gyro;
-    private SampleProvider angularRate;
+ 
     // baseline value used for calibration. 0 until it is determined.
     private float gyroBaseline = 0;
     
@@ -194,7 +193,6 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
         System.out.println("to calibrate");
         System.out.println("the gyro");
         System.out.println();
-        //gyro.recalibrateOffset();
         
         // read a few values and take the average
         float total = 0;
@@ -240,9 +238,7 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
         gyroSpeed = gyroRaw - gOffset; // Angular velocity (degrees/sec)
 
         gAngleGlobal += gyroSpeed * tInterval;
-        //gAngleGlobal += gyroRaw*tInterval;
         gyroAngle = gAngleGlobal; // Absolute angle (degrees)
-        //LCD.drawString("angle=" + gyroAngle, 5, 8);
     }
     
     /**
@@ -250,11 +246,8 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
      */
     private float getAngularVelocity() {
         float[] rate = new float[1];
-        //angularRate.fetchSample(rate, 0);
         gyro.fetchSample(rate, 0);
         float rotSpeed = rate[0] - gyroBaseline;
-        //System.out.println("gyroRaw="+gyroRaw);
-        //LCD.drawString("Gyro: " + rotSpeed, 2, 1);
         return rotSpeed; 
     }
 
@@ -275,12 +268,12 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
         motorDiff = mrcLeft - mrcRight;
 
         // mrcDetla is the change int sum of the motor encoders, update
-        // motorPos based on this detla
+        // motorPos based on this delta
         mrcDelta = mrcSum - mrcSumPrev;
         motorPos += mrcDelta;
 
         // motorSpeed is based on the average of the last four delta's.
-        motorSpeed = (mrcDelta+mrcDeltaP1+mrcDeltaP2+mrcDeltaP3) / (4*tInterval);
+        motorSpeed = (mrcDelta + mrcDeltaP1+mrcDeltaP2+mrcDeltaP3) / (4 * tInterval);
 
         // Shift the latest mrcDelta into the previous three saved delta values
         mrcDeltaP3 = mrcDeltaP2;
@@ -340,7 +333,7 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
         } else {
             // Take average of number of times through the loop and
             // use for interval time.
-            tInterval = (System.currentTimeMillis() - tCalcStart) / (cLoop*1000.0);
+            tInterval = (System.currentTimeMillis() - tCalcStart) / (cLoop * 1000.0);
         }
     }
 
@@ -403,7 +396,6 @@ public class EV3Segoway extends Thread { // TODO: Thread should be a private inn
             calcInterval(cLoop++);
 
             updateGyroData();
-
             updateMotorData();
 
             // Apply the drive control value to the motor position to get robot to move.
