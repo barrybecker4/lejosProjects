@@ -8,7 +8,7 @@ import lejos.hardware.sensor.HiTechnicGyro;
  */
 public class GyroSensor {
   
-    private static final int NUM_CALIBRATON_SAMPLES = 100;
+    private static final int NUM_CALIBRATON_SAMPLES = 50;
     
     /**
      * Gyro offset control
@@ -97,7 +97,7 @@ public class GyroSensor {
        
         for (int i=0; i<NUM_CALIBRATON_SAMPLES; i++) {
             total += getRawAngularVelocity();
-            ThreadUtil.sleep(10);
+            ThreadUtil.sleep(5);
         }
        
         float gyroBaseline = total / NUM_CALIBRATON_SAMPLES;

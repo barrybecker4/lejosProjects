@@ -45,6 +45,9 @@ class BalancingThread extends Thread {
      * robot must have fallen.  In milliseconds.
      */
     private static final double TIME_FALL_LIMIT = 500;
+    
+    /** First time through, set an initial tInterval time. */
+    private static final double INITIAL_INTERVAL_TIME = 0.0055;
 
     /** Time that robot first starts to balance.  Used to calculate tInterval. */
     private long tCalcStart;
@@ -111,6 +114,9 @@ class BalancingThread extends Thread {
     	wheelController.wheelDriver(left_wheel, right_wheel);
     }  
     
+    /**
+     * Tell this thread to stop running. Do not call the deprecated stop method on Thread.
+     */
     public void terminate() {
         terminated = true;
     }
@@ -181,9 +187,7 @@ class BalancingThread extends Thread {
      */
     private void calcInterval(long cLoop) {
         if (cLoop == 0) {
-            // First time through, set an initial tInterval time and
-            // record start time
-            tInterval = 0.0055;
+            tInterval = INITIAL_INTERVAL_TIME;
             tCalcStart = System.currentTimeMillis();
         } else {
             // Take average of number of times through the loop and

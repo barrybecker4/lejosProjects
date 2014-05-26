@@ -9,7 +9,9 @@ import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.NXTMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
+import lejos.hardware.sensor.EV3IRSensor;
 import lejos.hardware.sensor.HiTechnicGyro;
+import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 
 /**
@@ -26,6 +28,9 @@ public class Balancer {
     /** diameter of large Mindstorm wheels */
     private static final double LARGE_WHEEL_DIAMETER = 7.2;
     
+    /** diameter of large thin Mindstorm wheels */
+    private static final double LARGE_THIN_WHEEL_DIAMETER = 9.2;
+    
     public static void main(String[] args) throws Exception {
         LCD.drawString("Balancer Robot", 1, 3);
         Delay.msDelay(1000);
@@ -37,35 +42,30 @@ public class Balancer {
         
         NXTMotor left = new NXTMotor(MotorPort.B);
         NXTMotor right = new NXTMotor(MotorPort.C);
-        //EncoderMotor right = new EV3LargeRegulatedMotor(MotorPort.C);
+       
         GyroSensor gyro = new GyroSensor(new HiTechnicGyro(SensorPort.S1));
-        //EV3IRSensor irSensor = new EV3IRSensor(SensorPort.S4);
-        //SampleProvider distanceSampler = irSensor.getDistanceMode();
+        EV3IRSensor irSensor = new EV3IRSensor(SensorPort.S4);
+        SampleProvider distanceSampler = irSensor.getDistanceMode();
         
         EV3Segway robot = new EV3Segway(left, right, gyro, MEDIUM_WHEEL_DIAMETER);
         
+        
+        //Delay.msDelay(2000);
         /*
-        Delay.msDelay(2000);
         robot.wheelDriver(-120, -120); // Move forward
         
         float dist[] = new float[1];
         while (!Button.ESCAPE.isDown()) {
             distanceSampler.fetchSample(dist, 0);
-            //System.out.println("dist="+dist[0]);
-            if (dist[0] < 0.2) {
+            System.out.println("dist="+dist[0]);
+            if (dist[0] < 40.0) {
                 robot.wheelDriver(70, 35); // Arc back
                 Delay.msDelay(3000);
                 robot.wheelDriver(-120, -120); // Move forward
             }
             Delay.msDelay(350);
         }
-        
-        Button.waitForAnyPress();
-        irSensor.close();
-        gyro.close();
-        left.close();
-        right.close();
-        Delay.msDelay(1000);*/
+        */
         
         /*
         float[] rate = new float[1];
@@ -78,6 +78,10 @@ public class Balancer {
             Delay.msDelay(100);
         }*/
         Button.ENTER.waitForPressAndRelease();
+        irSensor.close();
+        left.close();
+        right.close();
+        Delay.msDelay(500);
         System.exit(0);
     }
 }
